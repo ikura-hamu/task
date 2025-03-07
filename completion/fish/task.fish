@@ -10,7 +10,10 @@ function __task_get_tasks --description "Prints all available tasks with their d
   end
 
   # Grab names and descriptions (if any) of the tasks
-  set -l output (echo $rawOutput | sed -e '1d; s/\* \(.*\):\s*\(.*\)\s*(\(aliases.*\))/\1\t\2\t\3/' -e 's/\* \(.*\):\s*\(.*\)/\1\t\2/'| string split0)
+  set -l output (
+    echo $rawOutput | sed '1d' | string sub -s 2 | string replace  -r ':\s+' '\t' | string replace -r '^\s*' '' | \
+      string replace -r '\s+\((aliases:.*)\)' '\t$1' | string split0
+  )
   if test $output
     echo $output
   end
